@@ -1,6 +1,154 @@
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Hand, Scan, Shield, Smartphone, ArrowRight, CheckCircle, Zap, Lock } from "lucide-react";
+import {
+  Hand, Scan, Shield, Smartphone, ArrowRight, CheckCircle, Zap, Lock,
+  Eye, Mic, CreditCard, AlertTriangle, Key, Sparkles, Volume2, Fingerprint,
+  Brain, Unlock, Users, Calendar, FileText, Camera
+} from "lucide-react";
+
+// Feature Card Component
+const FeatureCard = ({ icon, title, subtitle, description, functionality, delay }: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  description: string;
+  functionality: string;
+  delay: number;
+}) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay }}
+      viewport={{ once: true }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="group relative"
+    >
+      <div className="relative p-8 rounded-2xl bg-gradient-to-br from-card/40 to-card/20 backdrop-blur-xl border border-border/30 hover:border-cyber-cyan/50 transition-all duration-500 overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Icon */}
+        <div className="relative z-10 mb-6">
+          <motion.div
+            animate={isHovered ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {icon}
+          </motion.div>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10">
+          <div className="text-sm text-cyber-cyan font-medium mb-2">{subtitle}</div>
+          <h3 className="text-xl font-bold mb-4 group-hover:text-cyber-cyan transition-colors">
+            {title}
+          </h3>
+          <p className="text-muted-foreground mb-6 leading-relaxed">
+            {description}
+          </p>
+          <div className="flex items-start space-x-3 p-4 rounded-lg bg-dark-slate-900/50 border border-cyber-cyan/20">
+            <Zap className="w-4 h-4 text-cyber-cyan mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-muted-foreground">
+              <span className="text-cyber-cyan font-medium">Core Tech: </span>
+              {functionality}
+            </div>
+          </div>
+        </div>
+
+        {/* Hover effect */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={isHovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0 }}
+          transition={{ duration: 0.3 }}
+          className="absolute top-4 right-4 w-2 h-2 bg-cyber-cyan rounded-full"
+        />
+      </div>
+    </motion.div>
+  );
+};
+
+// Animated Feature Icons
+const BiometricIcon = () => (
+  <div className="relative w-16 h-16">
+    <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/20 to-blue-500/20 rounded-xl flex items-center justify-center">
+      <Eye className="w-8 h-8 text-cyber-cyan" />
+    </div>
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      className="absolute inset-0 border-2 border-cyber-cyan/30 border-dashed rounded-xl"
+    />
+  </div>
+);
+
+const PaymentIcon = () => (
+  <div className="relative w-16 h-16">
+    <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/20 to-blue-500/20 rounded-xl flex items-center justify-center">
+      <Volume2 className="w-8 h-8 text-cyber-cyan" />
+    </div>
+    <motion.div
+      animate={{ scale: [1, 1.1, 1] }}
+      transition={{ duration: 2, repeat: Infinity }}
+      className="absolute inset-2 border border-cyber-cyan/50 rounded-lg"
+    />
+  </div>
+);
+
+const VaultIcon = () => (
+  <div className="relative w-16 h-16">
+    <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/20 to-blue-500/20 rounded-xl flex items-center justify-center">
+      <CreditCard className="w-8 h-8 text-cyber-cyan" />
+    </div>
+    <motion.div
+      animate={{ y: [-2, 2, -2] }}
+      transition={{ duration: 3, repeat: Infinity }}
+      className="absolute inset-0"
+    />
+  </div>
+);
+
+const SOSIcon = () => (
+  <div className="relative w-16 h-16">
+    <div className="absolute inset-0 bg-gradient-to-br from-red-500/20 to-orange-500/20 rounded-xl flex items-center justify-center">
+      <AlertTriangle className="w-8 h-8 text-red-400" />
+    </div>
+    <motion.div
+      animate={{ opacity: [1, 0.3, 1] }}
+      transition={{ duration: 2, repeat: Infinity }}
+      className="absolute inset-0 bg-red-500/10 rounded-xl"
+    />
+  </div>
+);
+
+const AccessIcon = () => (
+  <div className="relative w-16 h-16">
+    <div className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/20 to-blue-500/20 rounded-xl flex items-center justify-center">
+      <Key className="w-8 h-8 text-cyber-cyan" />
+    </div>
+    <motion.div
+      animate={{ rotate: [0, 15, 0] }}
+      transition={{ duration: 4, repeat: Infinity }}
+      className="absolute inset-0"
+    />
+  </div>
+);
+
+const AIIcon = () => (
+  <div className="relative w-16 h-16">
+    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-500/20 rounded-xl flex items-center justify-center">
+      <Brain className="w-8 h-8 text-purple-400" />
+    </div>
+    <motion.div
+      animate={{ boxShadow: ["0 0 0 0 rgba(168, 85, 247, 0.4)", "0 0 0 10px rgba(168, 85, 247, 0)"] }}
+      transition={{ duration: 2, repeat: Infinity }}
+      className="absolute inset-0 rounded-xl"
+    />
+  </div>
+);
 
 export default function Index() {
   const [isScanning, setIsScanning] = useState(false);
@@ -197,6 +345,102 @@ export default function Index() {
           </motion.div>
         </div>
       </motion.div>
+
+      {/* Core Features Section */}
+      <motion.section
+        id="features"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-8 lg:px-16 py-20"
+      >
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-5xl font-bold mb-6"
+          >
+            Where Technology Feels Like
+            <span className="bg-gradient-to-r from-cyber-cyan via-blue-400 to-cyber-cyan bg-clip-text text-transparent block">
+              Pure Magic
+            </span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-lg text-muted-foreground max-w-3xl mx-auto"
+          >
+            Every feature is crafted to be visually stunning, intuitively simple, and fundamentally secure.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto">
+          {/* Feature 1: Biometric Onboarding */}
+          <FeatureCard
+            icon={<BiometricIcon />}
+            title="Cinematic Biometric Onboarding"
+            subtitle="The Seamless Welcome"
+            description="Your first interaction isn't a login form; it's a cinematic experience. Neural network lines converge and trace your unique print in real-time with ethereal neon glow."
+            functionality="Multi-Modal AI Palm & Face Authentication; Liveness Detection"
+            delay={0}
+          />
+
+          {/* Feature 2: Voice & Gesture Payments */}
+          <FeatureCard
+            icon={<PaymentIcon />}
+            title="Voice & Gesture Payments"
+            subtitle="The Intuitive Transaction"
+            description="Simply show your palm and speak the amount. Your secret gesture confirms with a beautiful ripple effect that washes the screen in calming green."
+            functionality="Voice-activated Payment Initiation; Gesture-based Confirmation PIN"
+            delay={0.1}
+          />
+
+          {/* Feature 3: Digital Vault */}
+          <FeatureCard
+            icon={<VaultIcon />}
+            title="Crystalline Card Locker"
+            subtitle="The Digital Vault"
+            description="Your documents are presented as beautiful, glass-morphic digital cards with parallax effects. Each card glows on hover and flips with stunning 3D animation."
+            functionality="Secure, Encrypted Storage for Digital IDs and Cards; OCR Data Extraction"
+            delay={0.2}
+          />
+
+          {/* Feature 4: SOS Mode */}
+          <FeatureCard
+            icon={<SOSIcon />}
+            title="Discreet SOS Mode"
+            subtitle="The Guardian Angel"
+            description="Emergency gesture triggers the same green ripple as normal payments. Only a tiny icon pulse confirms your silent alert - completely inconspicuous protection."
+            functionality="Duress Gesture Recognition; Silent SOS Alert with Geolocation"
+            delay={0.3}
+          />
+
+          {/* Feature 5: Access Control */}
+          <FeatureCard
+            icon={<AccessIcon />}
+            title="Seamless Access Control"
+            subtitle="The Universal Key"
+            description="Approaching smart locks or gates, simply raise your palm. Watch the lock icon elegantly rotate and unlock with swift, satisfying confirmation."
+            functionality="API for Third-Party Integration with Smart Locks and Access Systems"
+            delay={0.4}
+          />
+
+          {/* Feature 6: AI Engagement */}
+          <FeatureCard
+            icon={<AIIcon />}
+            title="AI-Powered Engagement"
+            subtitle="The Personal Touch"
+            description="Personalized greetings on special occasions and interactive palmistry with 3D hand models where corresponding lines light up dynamically."
+            functionality="Personalized Greetings; Interactive AI Chatbot"
+            delay={0.5}
+          />
+        </div>
+      </motion.section>
 
       {/* Trust indicators */}
       <motion.div
