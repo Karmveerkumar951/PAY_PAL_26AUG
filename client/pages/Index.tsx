@@ -446,6 +446,129 @@ export default function Index() {
         </div>
       </motion.section>
 
+      {/* Quick Access Navigation */}
+      <motion.section
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="px-6 md:px-8 lg:px-16 py-20"
+      >
+        <div className="text-center mb-12">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-bold mb-4"
+          >
+            Experience PalmPay
+            <span className="bg-gradient-to-r from-cyber-cyan via-blue-400 to-cyber-cyan bg-clip-text text-transparent block">
+              Right Now
+            </span>
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-lg text-muted-foreground max-w-2xl mx-auto"
+          >
+            Jump into any feature and explore the future of digital payments and identity management.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {[
+            {
+              title: "Biometric Setup",
+              description: "Complete your palm and face authentication setup",
+              icon: Fingerprint,
+              link: "/biometric-setup",
+              color: "from-green-500/20 to-emerald-500/20 border-green-400/30",
+              buttonColor: "from-green-500 to-emerald-500"
+            },
+            {
+              title: "Make Payment",
+              description: "Experience voice-activated secure payments",
+              icon: Zap,
+              link: "/payment",
+              color: "from-cyber-cyan/20 to-blue-500/20 border-cyber-cyan/30",
+              buttonColor: "from-cyber-cyan to-blue-500"
+            },
+            {
+              title: "Secure Vault",
+              description: "Store and manage your digital documents",
+              icon: Shield,
+              link: "/document-locker",
+              color: "from-purple-500/20 to-violet-500/20 border-purple-400/30",
+              buttonColor: "from-purple-500 to-violet-500"
+            },
+            {
+              title: "QR Scanner",
+              description: "Universal payment compatibility",
+              icon: Camera,
+              link: "/qr-scanner",
+              color: "from-orange-500/20 to-red-500/20 border-orange-400/30",
+              buttonColor: "from-orange-500 to-red-500"
+            },
+            {
+              title: "Accessibility",
+              description: "Multi-language and accessibility settings",
+              icon: Users,
+              link: "/accessibility",
+              color: "from-blue-500/20 to-indigo-500/20 border-blue-400/30",
+              buttonColor: "from-blue-500 to-indigo-500"
+            },
+            {
+              title: "AI Palmistry",
+              description: "Fun palm reading entertainment",
+              icon: Sparkles,
+              link: "/palmistry",
+              color: "from-pink-500/20 to-purple-500/20 border-pink-400/30",
+              buttonColor: "from-pink-500 to-purple-500"
+            }
+          ].map((item, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              className="group"
+            >
+              <Link to={item.link}>
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className={`p-6 rounded-xl bg-gradient-to-br ${item.color} backdrop-blur-sm border cursor-pointer hover:shadow-lg transition-all duration-300`}
+                >
+                  <div className="flex items-center space-x-4 mb-4">
+                    <div className="w-12 h-12 bg-card/50 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <item.icon className="w-6 h-6 text-cyber-cyan" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                    </div>
+                  </div>
+
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                    {item.description}
+                  </p>
+
+                  <motion.div
+                    whileHover={{ x: 5 }}
+                    className={`inline-flex items-center space-x-2 bg-gradient-to-r ${item.buttonColor} text-white px-4 py-2 rounded-lg font-medium text-sm group-hover:shadow-lg transition-all`}
+                  >
+                    <span>Try Now</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.div>
+                </motion.div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </motion.section>
+
       {/* Trust indicators */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
