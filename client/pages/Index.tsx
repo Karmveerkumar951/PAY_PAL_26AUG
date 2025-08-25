@@ -1,5 +1,6 @@
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Hand, Scan, Shield, Smartphone, ArrowRight, CheckCircle, Zap, Lock,
   Eye, Mic, CreditCard, AlertTriangle, Key, Sparkles, Volume2, Fingerprint,
@@ -193,11 +194,12 @@ export default function Index() {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="hidden md:flex items-center space-x-8"
+          className="hidden md:flex items-center space-x-6"
         >
-          <a href="#features" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Features</a>
-          <a href="#security" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Security</a>
-          <a href="#contact" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Contact</a>
+          <Link to="/payment" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Payment</Link>
+          <Link to="/document-locker" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Vault</Link>
+          <Link to="/accessibility" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Settings</Link>
+          <Link to="/palmistry" className="text-muted-foreground hover:text-cyber-cyan transition-colors">Palmistry</Link>
         </motion.div>
       </nav>
 
@@ -227,24 +229,26 @@ export default function Index() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <Link to="/biometric-setup">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-cyber-cyan to-blue-500 text-dark-slate-950 px-8 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-cyber-cyan/25 transition-all w-full sm:w-auto"
+                >
+                  <Scan className="w-5 h-5" />
+                  <span>Start Biometric Setup</span>
+                  <ArrowRight className="w-5 h-5" />
+                </motion.button>
+              </Link>
+
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={startScan}
-                className="bg-gradient-to-r from-cyber-cyan to-blue-500 text-dark-slate-950 px-8 py-4 rounded-xl font-semibold flex items-center justify-center space-x-2 hover:shadow-lg hover:shadow-cyber-cyan/25 transition-all"
-              >
-                <Scan className="w-5 h-5" />
-                <span>Start Biometric Setup</span>
-                <ArrowRight className="w-5 h-5" />
-              </motion.button>
-              
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
                 className="border border-cyber-cyan/30 text-cyber-cyan px-8 py-4 rounded-xl font-semibold hover:bg-cyber-cyan/10 transition-all flex items-center justify-center space-x-2"
               >
-                <Shield className="w-5 h-5" />
-                <span>Learn More</span>
+                <Hand className="w-5 h-5" />
+                <span>Demo Palm Scan</span>
               </motion.button>
             </div>
 

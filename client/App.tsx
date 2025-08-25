@@ -8,6 +8,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import BiometricSetup from "./pages/BiometricSetup";
+import Payment from "./pages/Payment";
+import QRScanner from "./pages/QRScanner";
+import DocumentLocker from "./pages/DocumentLocker";
+import Accessibility from "./pages/Accessibility";
+import Palmistry from "./pages/Palmistry";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +32,12 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/biometric-setup" element={<BiometricSetup />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/qr-scanner" element={<QRScanner />} />
+              <Route path="/document-locker" element={<DocumentLocker />} />
+              <Route path="/accessibility" element={<Accessibility />} />
+              <Route path="/palmistry" element={<Palmistry />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
