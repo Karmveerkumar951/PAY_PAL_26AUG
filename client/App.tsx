@@ -34,6 +34,8 @@ const App = () => {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/signin" element={<SignIn />} />
               <Route path="/biometric-setup" element={<BiometricSetup />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/qr-scanner" element={<QRScanner />} />
