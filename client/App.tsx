@@ -16,6 +16,9 @@ import Accessibility from "./pages/Accessibility";
 import Palmistry from "./pages/Palmistry";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient();
 
