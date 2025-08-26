@@ -14,6 +14,8 @@ import QRScanner from "./pages/QRScanner";
 import DocumentLocker from "./pages/DocumentLocker";
 import Accessibility from "./pages/Accessibility";
 import Palmistry from "./pages/Palmistry";
+import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
 
 const queryClient = new QueryClient();
 
