@@ -39,6 +39,9 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/signin" element={<SignIn />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
               <Route path="/biometric-setup" element={<BiometricSetup />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/qr-scanner" element={<QRScanner />} />
