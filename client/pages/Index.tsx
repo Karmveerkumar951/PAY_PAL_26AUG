@@ -550,8 +550,8 @@ export default function Index() {
             { to: "/palmistry", label: "Palmistry" }
           ].map((link, index) => (
             <motion.div key={link.to} whileHover={{ y: -2 }}>
-              <Link 
-                to={link.to} 
+              <Link
+                to={link.to}
                 className="text-muted-foreground hover:text-cyber-cyan transition-all duration-300 font-medium relative group"
               >
                 {link.label}
@@ -564,6 +564,27 @@ export default function Index() {
               </Link>
             </motion.div>
           ))}
+
+          {/* Authentication Links */}
+          <div className="flex items-center space-x-4 ml-6 pl-6 border-l border-border/30">
+            <motion.div whileHover={{ y: -2 }}>
+              <Link
+                to="/signin"
+                className="text-muted-foreground hover:text-cyber-cyan transition-all duration-300 font-medium"
+              >
+                Sign In
+              </Link>
+            </motion.div>
+
+            <motion.div whileHover={{ y: -2, scale: 1.05 }}>
+              <Link
+                to="/signup"
+                className="bg-gradient-to-r from-cyber-cyan to-blue-500 text-dark-slate-950 px-6 py-2 rounded-xl font-semibold hover:shadow-lg hover:shadow-cyber-cyan/25 transition-all duration-300"
+              >
+                Sign Up
+              </Link>
+            </motion.div>
+          </div>
         </motion.div>
       </motion.nav>
 
