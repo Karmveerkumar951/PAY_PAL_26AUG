@@ -1,8 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { 
-  Hand, Mail, ArrowRight, ArrowLeft, CheckCircle, 
-  AlertCircle, Shield, Key, Sparkles
+import {
+  Hand,
+  Mail,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle,
+  AlertCircle,
+  Shield,
+  Key,
+  Sparkles,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -23,7 +30,7 @@ const FloatingParticles = ({ count = 15 }: { count?: number }) => (
           duration: Math.random() * 3 + 2,
           repeat: Infinity,
           delay: Math.random() * 2,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
         style={{
           left: `${Math.random() * 100}%`,
@@ -35,14 +42,14 @@ const FloatingParticles = ({ count = 15 }: { count?: number }) => (
 );
 
 // Enhanced input component
-const FormInput = ({ 
-  icon: Icon, 
-  type = "text", 
-  placeholder, 
-  value, 
-  onChange, 
+const FormInput = ({
+  icon: Icon,
+  type = "text",
+  placeholder,
+  value,
+  onChange,
   error,
-  success 
+  success,
 }: {
   icon: any;
   type?: string;
@@ -55,30 +62,34 @@ const FormInput = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <motion.div 
+    <motion.div
       className="relative"
       whileHover={{ scale: 1.02 }}
       transition={{ duration: 0.2 }}
     >
-      <div className={`relative flex items-center p-4 rounded-2xl border transition-all duration-300 backdrop-blur-sm ${
-        error 
-          ? 'border-red-400/50 bg-red-500/10' 
-          : success 
-          ? 'border-green-400/50 bg-green-500/10'
-          : isFocused 
-          ? 'border-cyber-cyan/60 bg-cyber-cyan/5' 
-          : 'border-border/40 bg-card/20'
-      }`}>
-        <Icon className={`w-5 h-5 mr-3 transition-colors ${
-          error 
-            ? 'text-red-400' 
-            : success 
-            ? 'text-green-400'
-            : isFocused 
-            ? 'text-cyber-cyan' 
-            : 'text-muted-foreground'
-        }`} />
-        
+      <div
+        className={`relative flex items-center p-4 rounded-2xl border transition-all duration-300 backdrop-blur-sm ${
+          error
+            ? "border-red-400/50 bg-red-500/10"
+            : success
+              ? "border-green-400/50 bg-green-500/10"
+              : isFocused
+                ? "border-cyber-cyan/60 bg-cyber-cyan/5"
+                : "border-border/40 bg-card/20"
+        }`}
+      >
+        <Icon
+          className={`w-5 h-5 mr-3 transition-colors ${
+            error
+              ? "text-red-400"
+              : success
+                ? "text-green-400"
+                : isFocused
+                  ? "text-cyber-cyan"
+                  : "text-muted-foreground"
+          }`}
+        />
+
         <input
           type={type}
           placeholder={placeholder}
@@ -88,12 +99,10 @@ const FormInput = ({
           onBlur={() => setIsFocused(false)}
           className="flex-1 bg-transparent border-none outline-none text-foreground placeholder-muted-foreground text-lg"
         />
-        
-        {success && (
-          <CheckCircle className="w-5 h-5 ml-2 text-green-400" />
-        )}
+
+        {success && <CheckCircle className="w-5 h-5 ml-2 text-green-400" />}
       </div>
-      
+
       <AnimatePresence>
         {error && (
           <motion.div
@@ -112,10 +121,10 @@ const FormInput = ({
 };
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [step, setStep] = useState<'email' | 'sent' | 'reset'>('email');
-  const [error, setError] = useState('');
+  const [step, setStep] = useState<"email" | "sent" | "reset">("email");
+  const [error, setError] = useState("");
 
   const validateEmail = (email: string) => {
     return /\S+@\S+\.\S+/.test(email);
@@ -123,66 +132,66 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email.trim()) {
-      setError('Email is required');
+      setError("Email is required");
       return;
     }
-    
+
     if (!validateEmail(email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       return;
     }
-    
-    setError('');
+
+    setError("");
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      setStep('sent');
+      setStep("sent");
     }, 2000);
   };
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    if (error) setError('');
+    if (error) setError("");
   };
 
-  if (step === 'sent') {
-    return <EmailSentStep email={email} onReset={() => setStep('email')} />;
+  if (step === "sent") {
+    return <EmailSentStep email={email} onReset={() => setStep("email")} />;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-slate-950 via-dark-slate-900 to-dark-slate-800 text-foreground relative overflow-hidden">
       {/* Enhanced animated background */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-      
+
       {/* Floating particles */}
       <FloatingParticles count={20} />
-      
+
       {/* Enhanced Header */}
-      <motion.header 
+      <motion.header
         className="relative z-50 flex justify-between items-center p-6 md:p-8 backdrop-blur-md bg-card/10 border-b border-border/20"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <Link to="/" className="flex items-center space-x-4">
-          <motion.div 
+          <motion.div
             className="relative"
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.3 }}
           >
             <Hand className="w-10 h-10 text-cyber-cyan drop-shadow-lg" />
-            <motion.div 
+            <motion.div
               className="absolute inset-0 w-10 h-10 text-cyber-cyan rounded-full"
-              animate={{ 
+              animate={{
                 boxShadow: [
                   "0 0 20px rgba(0, 255, 255, 0.3)",
                   "0 0 40px rgba(0, 255, 255, 0.6)",
-                  "0 0 20px rgba(0, 255, 255, 0.3)"
-                ]
+                  "0 0 20px rgba(0, 255, 255, 0.3)",
+                ],
               }}
               transition={{ duration: 3, repeat: Infinity }}
             />
@@ -191,12 +200,14 @@ export default function ForgotPassword() {
             <span className="text-2xl font-bold bg-gradient-to-r from-cyber-cyan via-blue-400 to-cyber-cyan bg-clip-text text-transparent">
               PalmPay Secure
             </span>
-            <div className="text-xs text-muted-foreground">Password Recovery</div>
+            <div className="text-xs text-muted-foreground">
+              Password Recovery
+            </div>
           </div>
         </Link>
-        
-        <Link 
-          to="/signin" 
+
+        <Link
+          to="/signin"
           className="flex items-center space-x-2 text-muted-foreground hover:text-cyber-cyan transition-all duration-300 font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -206,14 +217,14 @@ export default function ForgotPassword() {
 
       {/* Main Content */}
       <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-6 py-12">
-        <motion.div 
+        <motion.div
           className="max-w-lg w-full"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
           {/* Header */}
-          <motion.div 
+          <motion.div
             className="text-center mb-12"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -221,12 +232,12 @@ export default function ForgotPassword() {
           >
             <motion.div
               className="w-20 h-20 mx-auto mb-8 bg-gradient-to-br from-orange-500/30 to-red-500/30 rounded-full flex items-center justify-center backdrop-blur-sm border border-orange-400/40"
-              animate={{ 
+              animate={{
                 boxShadow: [
                   "0 0 30px rgba(249, 115, 22, 0.3)",
                   "0 0 60px rgba(249, 115, 22, 0.6)",
-                  "0 0 30px rgba(249, 115, 22, 0.3)"
-                ]
+                  "0 0 30px rgba(249, 115, 22, 0.3)",
+                ],
               }}
               transition={{ duration: 3, repeat: Infinity }}
             >
@@ -239,7 +250,8 @@ export default function ForgotPassword() {
               </span>
             </h1>
             <p className="text-xl text-muted-foreground leading-relaxed">
-              No worries! Enter your email address and we'll send you a secure reset link.
+              No worries! Enter your email address and we'll send you a secure
+              reset link.
             </p>
           </motion.div>
 
@@ -272,7 +284,11 @@ export default function ForgotPassword() {
                   <>
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "linear",
+                      }}
                       className="w-6 h-6 border-2 border-white border-t-transparent rounded-full"
                     />
                     <span>Sending Reset Link...</span>
@@ -294,7 +310,9 @@ export default function ForgotPassword() {
                   <div className="w-full border-t border-border/30" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-4 bg-card/20 text-muted-foreground">Or try these options</span>
+                  <span className="px-4 bg-card/20 text-muted-foreground">
+                    Or try these options
+                  </span>
                 </div>
               </div>
 
@@ -309,7 +327,7 @@ export default function ForgotPassword() {
                     <span>Use Biometric Login</span>
                   </motion.button>
                 </Link>
-                
+
                 <Link to="/signup">
                   <motion.button
                     whileHover={{ scale: 1.05, y: -2 }}
@@ -333,9 +351,12 @@ export default function ForgotPassword() {
               <div className="flex items-start space-x-3">
                 <Shield className="w-5 h-5 text-cyber-cyan mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="text-cyber-cyan font-semibold mb-1">Security Notice</p>
+                  <p className="text-cyber-cyan font-semibold mb-1">
+                    Security Notice
+                  </p>
                   <p className="text-sm text-muted-foreground">
-                    Reset links expire in 15 minutes for your security. If you don't receive an email, check your spam folder.
+                    Reset links expire in 15 minutes for your security. If you
+                    don't receive an email, check your spam folder.
                   </p>
                 </div>
               </div>
@@ -343,16 +364,31 @@ export default function ForgotPassword() {
           </motion.div>
 
           {/* Footer links */}
-          <motion.div 
+          <motion.div
             className="text-center mt-8 space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
             <div className="flex justify-center space-x-6 text-sm text-muted-foreground">
-              <Link to="/signin" className="hover:text-cyber-cyan transition-colors">Sign In</Link>
-              <Link to="/signup" className="hover:text-cyber-cyan transition-colors">Sign Up</Link>
-              <Link to="/privacy" className="hover:text-cyber-cyan transition-colors">Privacy</Link>
+              <Link
+                to="/signin"
+                className="hover:text-cyber-cyan transition-colors"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/signup"
+                className="hover:text-cyber-cyan transition-colors"
+              >
+                Sign Up
+              </Link>
+              <Link
+                to="/privacy"
+                className="hover:text-cyber-cyan transition-colors"
+              >
+                Privacy
+              </Link>
             </div>
           </motion.div>
         </motion.div>
@@ -362,11 +398,17 @@ export default function ForgotPassword() {
 }
 
 // Email Sent Step Component
-const EmailSentStep = ({ email, onReset }: { email: string; onReset: () => void }) => (
+const EmailSentStep = ({
+  email,
+  onReset,
+}: {
+  email: string;
+  onReset: () => void;
+}) => (
   <div className="min-h-screen bg-gradient-to-br from-dark-slate-950 via-dark-slate-900 to-dark-slate-800 text-foreground relative overflow-hidden flex items-center justify-center px-6">
     <FloatingParticles count={15} />
-    
-    <motion.div 
+
+    <motion.div
       className="max-w-lg w-full text-center"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -379,13 +421,13 @@ const EmailSentStep = ({ email, onReset }: { email: string; onReset: () => void 
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
       >
         <motion.div
-          animate={{ 
+          animate={{
             scale: [1, 1.1, 1],
             boxShadow: [
               "0 0 30px rgba(34, 197, 94, 0.3)",
               "0 0 60px rgba(34, 197, 94, 0.6)",
-              "0 0 30px rgba(34, 197, 94, 0.3)"
-            ]
+              "0 0 30px rgba(34, 197, 94, 0.3)",
+            ],
           }}
           transition={{ duration: 3, repeat: Infinity }}
         >
@@ -398,14 +440,15 @@ const EmailSentStep = ({ email, onReset }: { email: string; onReset: () => void 
           Check Your Email
         </span>
       </h2>
-      
+
       <p className="text-xl text-muted-foreground mb-4 leading-relaxed">
         We've sent a password reset link to
       </p>
       <p className="text-cyber-cyan font-medium text-lg mb-8">{email}</p>
-      
+
       <p className="text-muted-foreground mb-12">
-        Click the link in the email to reset your password. The link will expire in 15 minutes.
+        Click the link in the email to reset your password. The link will expire
+        in 15 minutes.
       </p>
 
       <div className="space-y-4">

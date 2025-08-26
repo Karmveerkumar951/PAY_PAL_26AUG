@@ -1,13 +1,40 @@
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useState, useRef } from "react";
-import { 
-  Hand, Mic, CheckCircle, ArrowLeft, AlertTriangle, 
-  Volume2, Shield, CreditCard, MapPin, Clock, VolumeX,
-  Zap, Sparkles, Wifi, Target, Globe, Eye, Star
+import {
+  Hand,
+  Mic,
+  CheckCircle,
+  ArrowLeft,
+  AlertTriangle,
+  Volume2,
+  Shield,
+  CreditCard,
+  MapPin,
+  Clock,
+  VolumeX,
+  Zap,
+  Sparkles,
+  Wifi,
+  Target,
+  Globe,
+  Eye,
+  Star,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-type PaymentStep = 'scan' | 'voice' | 'confirm' | 'gesture' | 'processing' | 'success' | 'sos';
+type PaymentStep =
+  | "scan"
+  | "voice"
+  | "confirm"
+  | "gesture"
+  | "processing"
+  | "success"
+  | "sos";
 
 interface PaymentData {
   amount: string;
@@ -32,7 +59,7 @@ const FloatingParticles = ({ count = 15 }: { count?: number }) => (
           duration: Math.random() * 3 + 2,
           repeat: Infinity,
           delay: Math.random() * 2,
-          ease: "easeInOut"
+          ease: "easeInOut",
         }}
         style={{
           left: `${Math.random() * 100}%`,
@@ -44,49 +71,52 @@ const FloatingParticles = ({ count = 15 }: { count?: number }) => (
 );
 
 export default function Payment() {
-  const [currentStep, setCurrentStep] = useState<PaymentStep>('scan');
+  const [currentStep, setCurrentStep] = useState<PaymentStep>("scan");
   const [isScanning, setIsScanning] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentData, setPaymentData] = useState<PaymentData>({
-    amount: '',
-    merchant: 'Coffee Corner Cafe',
-    userName: 'Rakesh'
+    amount: "",
+    merchant: "Coffee Corner Cafe",
+    userName: "Rakesh",
   });
-  const [transcript, setTranscript] = useState('');
-  const [gestureMode, setGestureMode] = useState<'normal' | 'sos'>('normal');
+  const [transcript, setTranscript] = useState("");
+  const [gestureMode, setGestureMode] = useState<"normal" | "sos">("normal");
   const [scanProgress, setScanProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(
+    null,
+  );
 
   // Initialize speech recognition
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
-      
+
       recognition.continuous = false;
       recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      recognition.lang = "en-US";
 
       recognition.onresult = (event) => {
         const result = event.results[0][0].transcript;
         setTranscript(result);
-        
+
         // Parse payment amount from voice
         const amountMatch = result.match(/(\d+)\s*(rupees?|dollars?|rs\.?)/i);
         if (amountMatch) {
-          setPaymentData(prev => ({ ...prev, amount: amountMatch[1] }));
+          setPaymentData((prev) => ({ ...prev, amount: amountMatch[1] }));
           setTimeout(() => {
             setIsListening(false);
-            setCurrentStep('confirm');
+            setCurrentStep("confirm");
           }, 1000);
         }
       };
 
       recognition.onerror = (event) => {
-        console.error('Speech recognition error:', event.error);
+        console.error("Speech recognition error:", event.error);
         setIsListening(false);
       };
 
@@ -97,22 +127,22 @@ export default function Payment() {
   // Camera setup
   const startCamera = async () => {
     try {
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { width: 640, height: 480 },
-        audio: false 
+        audio: false,
       });
       setStream(mediaStream);
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
       }
     } catch (error) {
-      console.error('Camera access denied:', error);
+      console.error("Camera access denied:", error);
     }
   };
 
   const stopCamera = () => {
     if (stream) {
-      stream.getTracks().forEach(track => track.stop());
+      stream.getTracks().forEach((track) => track.stop());
       setStream(null);
     }
   };
@@ -121,13 +151,13 @@ export default function Payment() {
   const startPalmScan = () => {
     setIsScanning(true);
     setScanProgress(0);
-    
+
     const interval = setInterval(() => {
-      setScanProgress(prev => {
+      setScanProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsScanning(false);
-          setTimeout(() => setCurrentStep('voice'), 800);
+          setTimeout(() => setCurrentStep("voice"), 800);
           return 100;
         }
         return prev + 3;
@@ -139,7 +169,7 @@ export default function Payment() {
   const startVoiceRecognition = () => {
     if (recognition) {
       setIsListening(true);
-      setTranscript('');
+      setTranscript("");
       recognition.start();
     }
   };
@@ -152,38 +182,38 @@ export default function Payment() {
   };
 
   // Gesture confirmation
-  const confirmWithGesture = (type: 'normal' | 'sos' = 'normal') => {
+  const confirmWithGesture = (type: "normal" | "sos" = "normal") => {
     setGestureMode(type);
-    setCurrentStep('gesture');
-    
+    setCurrentStep("gesture");
+
     // Simulate gesture recognition
     setTimeout(() => {
-      if (type === 'sos') {
-        setCurrentStep('sos');
+      if (type === "sos") {
+        setCurrentStep("sos");
         // In real implementation, this would send SOS alert
         setTimeout(() => {
           // Show normal payment success to maintain disguise
-          setCurrentStep('success');
+          setCurrentStep("success");
         }, 3000);
       } else {
-        setCurrentStep('processing');
-        setTimeout(() => setCurrentStep('success'), 2500);
+        setCurrentStep("processing");
+        setTimeout(() => setCurrentStep("success"), 2500);
       }
     }, 2500);
   };
 
   // Text-to-speech for confirmations
   const speak = (text: string) => {
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      utterance.lang = "en-US";
       utterance.rate = 0.9;
       speechSynthesis.speak(utterance);
     }
   };
 
   useEffect(() => {
-    if (currentStep === 'scan') {
+    if (currentStep === "scan") {
       startCamera();
     } else {
       stopCamera();
@@ -194,20 +224,24 @@ export default function Payment() {
 
   // Auto-speak confirmations
   useEffect(() => {
-    if (currentStep === 'voice') {
-      speak(`Welcome, ${paymentData.userName}! How much would you like to pay to ${paymentData.merchant}?`);
-    } else if (currentStep === 'confirm' && paymentData.amount) {
-      speak(`${paymentData.userName}, paying ${paymentData.amount} rupees to ${paymentData.merchant}. Please confirm with your gesture.`);
-    } else if (currentStep === 'success') {
-      speak('Payment successful!');
+    if (currentStep === "voice") {
+      speak(
+        `Welcome, ${paymentData.userName}! How much would you like to pay to ${paymentData.merchant}?`,
+      );
+    } else if (currentStep === "confirm" && paymentData.amount) {
+      speak(
+        `${paymentData.userName}, paying ${paymentData.amount} rupees to ${paymentData.merchant}. Please confirm with your gesture.`,
+      );
+    } else if (currentStep === "success") {
+      speak("Payment successful!");
     }
   }, [currentStep, paymentData]);
 
   const renderStep = () => {
     switch (currentStep) {
-      case 'scan':
+      case "scan":
         return (
-          <PalmScanStep 
+          <PalmScanStep
             isScanning={isScanning}
             scanProgress={scanProgress}
             onScan={startPalmScan}
@@ -215,10 +249,10 @@ export default function Payment() {
             userName={paymentData.userName}
           />
         );
-      
-      case 'voice':
+
+      case "voice":
         return (
-          <VoiceStep 
+          <VoiceStep
             isListening={isListening}
             transcript={transcript}
             onStartListening={startVoiceRecognition}
@@ -226,28 +260,30 @@ export default function Payment() {
             paymentData={paymentData}
           />
         );
-      
-      case 'confirm':
+
+      case "confirm":
         return (
-          <ConfirmStep 
+          <ConfirmStep
             paymentData={paymentData}
-            onConfirm={() => confirmWithGesture('normal')}
-            onSOS={() => confirmWithGesture('sos')}
+            onConfirm={() => confirmWithGesture("normal")}
+            onSOS={() => confirmWithGesture("sos")}
           />
         );
-      
-      case 'gesture':
+
+      case "gesture":
         return <GestureStep gestureMode={gestureMode} />;
-      
-      case 'processing':
+
+      case "processing":
         return <ProcessingStep />;
-      
-      case 'success':
-        return <SuccessStep paymentData={paymentData} gestureMode={gestureMode} />;
-      
-      case 'sos':
+
+      case "success":
+        return (
+          <SuccessStep paymentData={paymentData} gestureMode={gestureMode} />
+        );
+
+      case "sos":
         return <SOSStep />;
-      
+
       default:
         return null;
     }
@@ -257,32 +293,32 @@ export default function Payment() {
     <div className="min-h-screen bg-gradient-to-br from-dark-slate-950 via-dark-slate-900 to-dark-slate-800 text-foreground relative overflow-hidden">
       {/* Enhanced animated background */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(0,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-      
+
       {/* Floating particles */}
       <FloatingParticles count={20} />
-      
+
       {/* Enhanced Header */}
-      <motion.header 
+      <motion.header
         className="relative z-50 flex justify-between items-center p-6 md:p-8 backdrop-blur-md bg-card/10 border-b border-border/20"
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
       >
         <Link to="/" className="flex items-center space-x-4">
-          <motion.div 
+          <motion.div
             className="relative"
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.3 }}
           >
             <Hand className="w-10 h-10 text-cyber-cyan drop-shadow-lg" />
-            <motion.div 
+            <motion.div
               className="absolute inset-0 w-10 h-10 text-cyber-cyan rounded-full"
-              animate={{ 
+              animate={{
                 boxShadow: [
                   "0 0 20px rgba(0, 255, 255, 0.3)",
                   "0 0 40px rgba(0, 255, 255, 0.6)",
-                  "0 0 20px rgba(0, 255, 255, 0.3)"
-                ]
+                  "0 0 20px rgba(0, 255, 255, 0.3)",
+                ],
               }}
               transition={{ duration: 3, repeat: Infinity }}
             />
@@ -291,15 +327,17 @@ export default function Payment() {
             <span className="text-2xl font-bold bg-gradient-to-r from-cyber-cyan via-blue-400 to-cyber-cyan bg-clip-text text-transparent">
               PalmPay Secure
             </span>
-            <div className="text-xs text-muted-foreground">Secure Payment Terminal</div>
+            <div className="text-xs text-muted-foreground">
+              Secure Payment Terminal
+            </div>
           </div>
         </Link>
-        
+
         <div className="flex items-center space-x-6">
           <div className="text-sm text-muted-foreground">
             Payment Session Active
           </div>
-          <motion.div 
+          <motion.div
             className="w-3 h-3 bg-green-400 rounded-full"
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -310,9 +348,7 @@ export default function Payment() {
       {/* Main Content */}
       <div className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-6">
         <div className="max-w-3xl w-full">
-          <AnimatePresence mode="wait">
-            {renderStep()}
-          </AnimatePresence>
+          <AnimatePresence mode="wait">{renderStep()}</AnimatePresence>
         </div>
       </div>
     </div>
@@ -320,12 +356,12 @@ export default function Payment() {
 }
 
 // Enhanced Step Components
-const PalmScanStep = ({ 
-  isScanning, 
-  scanProgress, 
-  onScan, 
+const PalmScanStep = ({
+  isScanning,
+  scanProgress,
+  onScan,
   videoRef,
-  userName 
+  userName,
 }: {
   isScanning: boolean;
   scanProgress: number;
@@ -351,11 +387,12 @@ const PalmScanStep = ({
         </span>
       </h1>
       <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
-        Place your registered palm in front of the scanner to begin secure payment processing
+        Place your registered palm in front of the scanner to begin secure
+        payment processing
       </p>
     </motion.div>
 
-    <motion.div 
+    <motion.div
       className="relative max-w-lg mx-auto mb-12"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -369,16 +406,16 @@ const PalmScanStep = ({
           muted
           className="w-full h-full object-cover"
         />
-        
+
         {/* Advanced Scanning Overlay */}
         {isScanning && (
           <>
-            <motion.div 
+            <motion.div
               className="absolute inset-0 bg-gradient-to-br from-cyber-cyan/20 to-blue-500/20"
               animate={{ opacity: [0.3, 0.7, 0.3] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
-            
+
             {/* Multiple scan lines */}
             <motion.div
               initial={{ y: -40 }}
@@ -386,11 +423,16 @@ const PalmScanStep = ({
               transition={{ duration: 2, ease: "linear", repeat: Infinity }}
               className="absolute left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyber-cyan to-transparent shadow-lg shadow-cyber-cyan/50"
             />
-            
+
             <motion.div
               initial={{ y: -40 }}
               animate={{ y: 320 }}
-              transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.5 }}
+              transition={{
+                duration: 2,
+                ease: "linear",
+                repeat: Infinity,
+                delay: 0.5,
+              }}
               className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-blue-400 to-transparent"
             />
 
@@ -399,32 +441,36 @@ const PalmScanStep = ({
               <motion.div
                 key={i}
                 className="absolute inset-0 rounded-3xl border border-cyber-cyan/30"
-                animate={{ 
+                animate={{
                   scale: [1, 1.5, 2],
-                  opacity: [0.8, 0.4, 0]
+                  opacity: [0.8, 0.4, 0],
                 }}
-                transition={{ 
+                transition={{
                   duration: 2,
                   repeat: Infinity,
-                  delay: i * 0.7
+                  delay: i * 0.7,
                 }}
               />
             ))}
           </>
         )}
-        
+
         {/* Enhanced Palm Guide Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <motion.div 
+          <motion.div
             className="w-40 h-48 border-2 border-cyber-cyan/60 border-dashed rounded-2xl flex items-center justify-center backdrop-blur-sm bg-cyber-cyan/5"
             animate={isScanning ? { scale: [1, 1.05, 1] } : { scale: 1 }}
             transition={{ duration: 2, repeat: isScanning ? Infinity : 0 }}
           >
             <motion.div
-              animate={isScanning ? { 
-                scale: [1, 1.1, 1],
-                opacity: [0.7, 1, 0.7]
-              } : { scale: 1, opacity: 0.7 }}
+              animate={
+                isScanning
+                  ? {
+                      scale: [1, 1.1, 1],
+                      opacity: [0.7, 1, 0.7],
+                    }
+                  : { scale: 1, opacity: 0.7 }
+              }
               transition={{ duration: 1.5, repeat: isScanning ? Infinity : 0 }}
             >
               <Hand className="w-20 h-20 text-cyber-cyan/80 drop-shadow-lg" />
@@ -437,20 +483,24 @@ const PalmScanStep = ({
           { position: "top-4 left-4", rotation: 0 },
           { position: "top-4 right-4", rotation: 90 },
           { position: "bottom-4 right-4", rotation: 180 },
-          { position: "bottom-4 left-4", rotation: 270 }
+          { position: "bottom-4 left-4", rotation: 270 },
         ].map((bracket, index) => (
           <motion.div
             key={index}
             className={`absolute ${bracket.position} w-8 h-8 border-l-2 border-t-2 border-cyber-cyan`}
             style={{ rotate: bracket.rotation }}
-            animate={isScanning ? { 
-              scale: [1, 1.2, 1],
-              opacity: [0.7, 1, 0.7]
-            } : { scale: 1, opacity: 0.7 }}
-            transition={{ 
-              duration: 2, 
+            animate={
+              isScanning
+                ? {
+                    scale: [1, 1.2, 1],
+                    opacity: [0.7, 1, 0.7],
+                  }
+                : { scale: 1, opacity: 0.7 }
+            }
+            transition={{
+              duration: 2,
               repeat: isScanning ? Infinity : 0,
-              delay: index * 0.2
+              delay: index * 0.2,
             }}
           />
         ))}
@@ -458,7 +508,7 @@ const PalmScanStep = ({
 
       {/* Enhanced Progress */}
       {isScanning && (
-        <motion.div 
+        <motion.div
           className="mt-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -467,7 +517,13 @@ const PalmScanStep = ({
             <motion.div
               className="bg-gradient-to-r from-cyber-cyan via-blue-400 to-purple-400 h-3 rounded-full shadow-lg shadow-cyber-cyan/30"
               style={{ width: `${scanProgress}%` }}
-              animate={{ boxShadow: ["0 0 10px rgba(0, 255, 255, 0.3)", "0 0 20px rgba(0, 255, 255, 0.6)", "0 0 10px rgba(0, 255, 255, 0.3)"] }}
+              animate={{
+                boxShadow: [
+                  "0 0 10px rgba(0, 255, 255, 0.3)",
+                  "0 0 20px rgba(0, 255, 255, 0.6)",
+                  "0 0 10px rgba(0, 255, 255, 0.3)",
+                ],
+              }}
               transition={{ duration: 1.5, repeat: Infinity }}
             />
           </div>
@@ -496,12 +552,12 @@ const PalmScanStep = ({
   </motion.div>
 );
 
-const VoiceStep = ({ 
-  isListening, 
-  transcript, 
-  onStartListening, 
+const VoiceStep = ({
+  isListening,
+  transcript,
+  onStartListening,
   onStopListening,
-  paymentData 
+  paymentData,
 }: {
   isListening: boolean;
   transcript: string;
@@ -524,28 +580,31 @@ const VoiceStep = ({
     >
       <motion.div
         className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500/30 to-cyan-500/30 rounded-full flex items-center justify-center backdrop-blur-sm border border-green-400/30"
-        animate={{ 
+        animate={{
           boxShadow: [
             "0 0 20px rgba(34, 197, 94, 0.3)",
             "0 0 40px rgba(34, 197, 94, 0.6)",
-            "0 0 20px rgba(34, 197, 94, 0.3)"
-          ]
+            "0 0 20px rgba(34, 197, 94, 0.3)",
+          ],
         }}
         transition={{ duration: 3, repeat: Infinity }}
       >
         <CheckCircle className="w-10 h-10 text-green-400" />
       </motion.div>
-      
+
       <h2 className="text-4xl font-bold mb-4">
         <span className="text-green-400">Welcome, {paymentData.userName}!</span>
       </h2>
       <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-        Authentication successful! How much would you like to pay to{' '}
-        <span className="text-cyber-cyan font-medium">{paymentData.merchant}</span>?
+        Authentication successful! How much would you like to pay to{" "}
+        <span className="text-cyber-cyan font-medium">
+          {paymentData.merchant}
+        </span>
+        ?
       </p>
     </motion.div>
 
-    <motion.div 
+    <motion.div
       className="relative max-w-lg mx-auto mb-12"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -568,21 +627,21 @@ const VoiceStep = ({
             <Volume2 className="w-20 h-20 text-cyber-cyan drop-shadow-lg" />
           )}
         </motion.div>
-        
+
         {isListening && (
           <>
             {[...Array(4)].map((_, i) => (
               <motion.div
                 key={i}
                 className="absolute inset-0 rounded-full border border-cyber-cyan/30"
-                animate={{ 
+                animate={{
                   scale: [1, 2.5, 4],
-                  opacity: [0.8, 0.4, 0]
+                  opacity: [0.8, 0.4, 0],
                 }}
-                transition={{ 
+                transition={{
                   duration: 2,
                   repeat: Infinity,
-                  delay: i * 0.5
+                  delay: i * 0.5,
                 }}
               />
             ))}
@@ -591,16 +650,20 @@ const VoiceStep = ({
       </div>
 
       {/* Enhanced Transcript Display */}
-      <motion.div 
+      <motion.div
         className="mt-8 p-6 rounded-2xl bg-card/40 backdrop-blur-xl border border-border/40 min-h-[80px] flex items-center justify-center"
-        animate={transcript ? { 
-          borderColor: "rgba(0, 255, 255, 0.6)",
-          boxShadow: "0 0 30px rgba(0, 255, 255, 0.2)"
-        } : {}}
+        animate={
+          transcript
+            ? {
+                borderColor: "rgba(0, 255, 255, 0.6)",
+                boxShadow: "0 0 30px rgba(0, 255, 255, 0.2)",
+              }
+            : {}
+        }
         transition={{ duration: 0.5 }}
       >
         {transcript ? (
-          <motion.p 
+          <motion.p
             className="text-cyber-cyan font-medium text-lg"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -608,7 +671,7 @@ const VoiceStep = ({
             "{transcript}"
           </motion.p>
         ) : isListening ? (
-          <motion.p 
+          <motion.p
             className="text-muted-foreground text-lg"
             animate={{ opacity: [0.5, 1, 0.5] }}
             transition={{ duration: 1.5, repeat: Infinity }}
@@ -650,10 +713,10 @@ const VoiceStep = ({
   </motion.div>
 );
 
-const ConfirmStep = ({ 
-  paymentData, 
-  onConfirm, 
-  onSOS 
+const ConfirmStep = ({
+  paymentData,
+  onConfirm,
+  onSOS,
 }: {
   paymentData: PaymentData;
   onConfirm: () => void;
@@ -666,7 +729,7 @@ const ConfirmStep = ({
     transition={{ duration: 0.8 }}
     className="text-center"
   >
-    <motion.h2 
+    <motion.h2
       className="text-4xl font-bold mb-12"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -678,7 +741,7 @@ const ConfirmStep = ({
     </motion.h2>
 
     {/* Enhanced Payment Details */}
-    <motion.div 
+    <motion.div
       className="max-w-lg mx-auto mb-12 p-8 rounded-3xl bg-gradient-to-br from-card/50 to-card/20 backdrop-blur-xl border border-border/40"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -688,7 +751,7 @@ const ConfirmStep = ({
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground text-lg">Amount:</span>
-          <motion.span 
+          <motion.span
             className="text-4xl font-bold text-cyber-cyan"
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
@@ -696,19 +759,19 @@ const ConfirmStep = ({
             ₹{paymentData.amount}
           </motion.span>
         </div>
-        
+
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        
+
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">To:</span>
           <span className="font-medium text-xl">{paymentData.merchant}</span>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">From:</span>
           <span className="font-medium text-xl">{paymentData.userName}</span>
         </div>
-        
+
         <div className="flex items-center justify-between">
           <span className="text-muted-foreground">Time:</span>
           <span className="text-sm">{new Date().toLocaleTimeString()}</span>
@@ -716,7 +779,7 @@ const ConfirmStep = ({
       </div>
     </motion.div>
 
-    <motion.div 
+    <motion.div
       className="mb-12"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -727,7 +790,9 @@ const ConfirmStep = ({
       </p>
       <div className="flex items-center justify-center space-x-3 text-cyber-cyan">
         <Shield className="w-5 h-5" />
-        <span className="font-medium">Secure gesture authentication required</span>
+        <span className="font-medium">
+          Secure gesture authentication required
+        </span>
         <Star className="w-5 h-5" />
       </div>
     </motion.div>
@@ -746,7 +811,7 @@ const ConfirmStep = ({
         <span>Confirm Payment</span>
         <Zap className="w-6 h-6" />
       </motion.button>
-      
+
       {/* Hidden SOS button (in real app, this would be disguised) */}
       <motion.button
         whileHover={{ scale: 1.05, y: -2 }}
@@ -765,7 +830,7 @@ const ConfirmStep = ({
   </motion.div>
 );
 
-const GestureStep = ({ gestureMode }: { gestureMode: 'normal' | 'sos' }) => (
+const GestureStep = ({ gestureMode }: { gestureMode: "normal" | "sos" }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
@@ -773,12 +838,12 @@ const GestureStep = ({ gestureMode }: { gestureMode: 'normal' | 'sos' }) => (
     transition={{ duration: 0.8 }}
     className="text-center"
   >
-    <motion.h2 
+    <motion.h2
       className="text-4xl font-bold mb-12"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      {gestureMode === 'sos' ? (
+      {gestureMode === "sos" ? (
         <span className="text-orange-400">Processing Request...</span>
       ) : (
         <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
@@ -787,43 +852,46 @@ const GestureStep = ({ gestureMode }: { gestureMode: 'normal' | 'sos' }) => (
       )}
     </motion.h2>
 
-    <motion.div 
+    <motion.div
       className="relative max-w-lg mx-auto mb-12"
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, delay: 0.2 }}
     >
-      <div className={`w-96 h-72 mx-auto rounded-3xl bg-gradient-to-br ${
-        gestureMode === 'sos' 
-          ? 'from-orange-500/20 to-red-500/20 border-orange-400/40' 
-          : 'from-purple-500/20 to-blue-500/20 border-purple-400/40'
-      } border-2 flex items-center justify-center backdrop-blur-sm relative overflow-hidden`}>
-        
+      <div
+        className={`w-96 h-72 mx-auto rounded-3xl bg-gradient-to-br ${
+          gestureMode === "sos"
+            ? "from-orange-500/20 to-red-500/20 border-orange-400/40"
+            : "from-purple-500/20 to-blue-500/20 border-purple-400/40"
+        } border-2 flex items-center justify-center backdrop-blur-sm relative overflow-hidden`}
+      >
         {/* Animated background */}
         <motion.div
           className={`absolute inset-0 bg-gradient-to-br ${
-            gestureMode === 'sos' 
-              ? 'from-orange-500/10 to-red-500/10' 
-              : 'from-purple-500/10 to-blue-500/10'
+            gestureMode === "sos"
+              ? "from-orange-500/10 to-red-500/10"
+              : "from-purple-500/10 to-blue-500/10"
           }`}
           animate={{ opacity: [0.3, 0.7, 0.3] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
 
         <motion.div
-          animate={{ 
+          animate={{
             rotate: [0, 15, -15, 0],
-            scale: [1, 1.1, 1]
+            scale: [1, 1.1, 1],
           }}
-          transition={{ 
-            duration: 1, 
+          transition={{
+            duration: 1,
             repeat: Infinity,
-            repeatType: "reverse"
+            repeatType: "reverse",
           }}
         >
-          <Hand className={`w-32 h-32 ${
-            gestureMode === 'sos' ? 'text-orange-400' : 'text-purple-400'
-          } drop-shadow-lg`} />
+          <Hand
+            className={`w-32 h-32 ${
+              gestureMode === "sos" ? "text-orange-400" : "text-purple-400"
+            } drop-shadow-lg`}
+          />
         </motion.div>
 
         {/* Scanning rings */}
@@ -831,29 +899,33 @@ const GestureStep = ({ gestureMode }: { gestureMode: 'normal' | 'sos' }) => (
           <motion.div
             key={i}
             className={`absolute inset-0 rounded-3xl border ${
-              gestureMode === 'sos' ? 'border-orange-400/30' : 'border-purple-400/30'
+              gestureMode === "sos"
+                ? "border-orange-400/30"
+                : "border-purple-400/30"
             }`}
-            animate={{ 
+            animate={{
               scale: [1, 1.5, 2],
-              opacity: [0.8, 0.4, 0]
+              opacity: [0.8, 0.4, 0],
             }}
-            transition={{ 
+            transition={{
               duration: 2,
               repeat: Infinity,
-              delay: i * 0.7
+              delay: i * 0.7,
             }}
           />
         ))}
       </div>
 
-      <motion.p 
+      <motion.p
         className={`font-medium mt-6 text-lg ${
-          gestureMode === 'sos' ? 'text-orange-400' : 'text-purple-400'
+          gestureMode === "sos" ? "text-orange-400" : "text-purple-400"
         }`}
         animate={{ opacity: [0.7, 1, 0.7] }}
         transition={{ duration: 1.5, repeat: Infinity }}
       >
-        {gestureMode === 'sos' ? 'Processing your request safely...' : 'Recognizing your gesture PIN...'}
+        {gestureMode === "sos"
+          ? "Processing your request safely..."
+          : "Recognizing your gesture PIN..."}
       </motion.p>
     </motion.div>
   </motion.div>
@@ -869,12 +941,12 @@ const ProcessingStep = () => (
   >
     <motion.div
       className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-cyber-cyan/30 to-blue-500/30 rounded-full flex items-center justify-center backdrop-blur-sm border border-cyber-cyan/40"
-      animate={{ 
+      animate={{
         boxShadow: [
           "0 0 30px rgba(0, 255, 255, 0.3)",
           "0 0 60px rgba(0, 255, 255, 0.6)",
-          "0 0 30px rgba(0, 255, 255, 0.3)"
-        ]
+          "0 0 30px rgba(0, 255, 255, 0.3)",
+        ],
       }}
       transition={{ duration: 2, repeat: Infinity }}
     >
@@ -885,8 +957,8 @@ const ProcessingStep = () => (
         <CreditCard className="w-16 h-16 text-cyber-cyan drop-shadow-lg" />
       </motion.div>
     </motion.div>
-    
-    <motion.h2 
+
+    <motion.h2
       className="text-4xl font-bold mb-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -895,8 +967,8 @@ const ProcessingStep = () => (
         Processing Payment
       </span>
     </motion.h2>
-    
-    <motion.p 
+
+    <motion.p
       className="text-xl text-muted-foreground"
       animate={{ opacity: [0.7, 1, 0.7] }}
       transition={{ duration: 1.5, repeat: Infinity }}
@@ -910,14 +982,14 @@ const ProcessingStep = () => (
         <motion.div
           key={i}
           className="w-3 h-3 bg-cyber-cyan rounded-full"
-          animate={{ 
+          animate={{
             scale: [1, 1.5, 1],
-            opacity: [0.5, 1, 0.5]
+            opacity: [0.5, 1, 0.5],
           }}
-          transition={{ 
+          transition={{
             duration: 1,
             repeat: Infinity,
-            delay: i * 0.3
+            delay: i * 0.3,
           }}
         />
       ))}
@@ -925,12 +997,12 @@ const ProcessingStep = () => (
   </motion.div>
 );
 
-const SuccessStep = ({ 
-  paymentData, 
-  gestureMode 
-}: { 
-  paymentData: PaymentData; 
-  gestureMode: 'normal' | 'sos';
+const SuccessStep = ({
+  paymentData,
+  gestureMode,
+}: {
+  paymentData: PaymentData;
+  gestureMode: "normal" | "sos";
 }) => (
   <motion.div
     initial={{ opacity: 0, scale: 0.8 }}
@@ -945,20 +1017,20 @@ const SuccessStep = ({
       className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-green-500/30 to-cyan-500/30 rounded-full flex items-center justify-center backdrop-blur-sm border border-green-400/40"
     >
       <motion.div
-        animate={{ 
+        animate={{
           scale: [1, 1.1, 1],
           boxShadow: [
             "0 0 20px rgba(34, 197, 94, 0.3)",
             "0 0 40px rgba(34, 197, 94, 0.6)",
-            "0 0 20px rgba(34, 197, 94, 0.3)"
-          ]
+            "0 0 20px rgba(34, 197, 94, 0.3)",
+          ],
         }}
         transition={{ duration: 3, repeat: Infinity }}
       >
         <CheckCircle className="w-16 h-16 text-green-400" />
       </motion.div>
     </motion.div>
-    
+
     <motion.h1
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -969,21 +1041,23 @@ const SuccessStep = ({
         Payment Successful!
       </span>
     </motion.h1>
-    
+
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5 }}
       className="max-w-lg mx-auto mb-12 p-8 rounded-3xl bg-gradient-to-br from-green-500/20 to-cyan-500/20 border border-green-500/40 backdrop-blur-xl"
     >
-      <motion.div 
+      <motion.div
         className="text-5xl font-bold text-green-400 mb-4"
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 2, repeat: Infinity }}
       >
         ₹{paymentData.amount}
       </motion.div>
-      <div className="text-xl text-muted-foreground mb-2">paid to {paymentData.merchant}</div>
+      <div className="text-xl text-muted-foreground mb-2">
+        paid to {paymentData.merchant}
+      </div>
       <div className="text-sm text-muted-foreground mb-4">
         Transaction ID: TXN{Date.now().toString().slice(-8)}
       </div>
@@ -993,7 +1067,7 @@ const SuccessStep = ({
       </div>
     </motion.div>
 
-    {gestureMode === 'sos' && (
+    {gestureMode === "sos" && (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -1020,7 +1094,7 @@ const SuccessStep = ({
           <span>New Payment</span>
         </motion.button>
       </Link>
-      
+
       <Link to="/">
         <motion.button
           whileHover={{ scale: 1.05, y: -2 }}
@@ -1044,12 +1118,12 @@ const SOSStep = () => (
   >
     <motion.div
       className="w-32 h-32 mx-auto mb-8 bg-gradient-to-br from-orange-500/30 to-red-500/30 rounded-full flex items-center justify-center backdrop-blur-sm border border-orange-400/40"
-      animate={{ 
+      animate={{
         boxShadow: [
           "0 0 30px rgba(249, 115, 22, 0.4)",
           "0 0 60px rgba(249, 115, 22, 0.7)",
-          "0 0 30px rgba(249, 115, 22, 0.4)"
-        ]
+          "0 0 30px rgba(249, 115, 22, 0.4)",
+        ],
       }}
       transition={{ duration: 1.5, repeat: Infinity }}
     >
@@ -1060,8 +1134,8 @@ const SOSStep = () => (
         <AlertTriangle className="w-16 h-16 text-orange-400" />
       </motion.div>
     </motion.div>
-    
-    <motion.h2 
+
+    <motion.h2
       className="text-4xl font-bold mb-6"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -1070,15 +1144,16 @@ const SOSStep = () => (
         Emergency Alert Sent
       </span>
     </motion.h2>
-    
-    <motion.div 
+
+    <motion.div
       className="max-w-lg mx-auto mb-12 p-8 rounded-3xl bg-gradient-to-br from-orange-500/20 to-red-500/20 border border-orange-500/40 backdrop-blur-xl"
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.3 }}
     >
       <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
-        Your emergency contacts have been notified with your current location and situation details.
+        Your emergency contacts have been notified with your current location
+        and situation details.
       </p>
       <div className="flex items-center justify-center space-x-6 text-orange-400">
         <div className="flex items-center space-x-2">
@@ -1092,7 +1167,7 @@ const SOSStep = () => (
       </div>
     </motion.div>
 
-    <motion.p 
+    <motion.p
       className="text-lg text-muted-foreground mb-8"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}

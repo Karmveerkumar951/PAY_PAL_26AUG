@@ -24,8 +24,8 @@ const queryClient = new QueryClient();
 
 const App = () => {
   // Force dark mode for PalmPay Secure
-  if (typeof document !== 'undefined') {
-    document.documentElement.classList.add('dark');
+  if (typeof document !== "undefined") {
+    document.documentElement.classList.add("dark");
   }
 
   return (
