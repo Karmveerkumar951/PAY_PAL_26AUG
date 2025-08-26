@@ -537,6 +537,29 @@ export default function Index() {
           </div>
         </motion.div>
         
+        {/* Mobile Navigation */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="flex md:hidden items-center space-x-4"
+        >
+          <Link
+            to="/signin"
+            className="text-muted-foreground hover:text-cyber-cyan transition-all duration-300 font-medium text-sm"
+          >
+            Sign In
+          </Link>
+
+          <Link
+            to="/signup"
+            className="bg-gradient-to-r from-cyber-cyan to-blue-500 text-dark-slate-950 px-4 py-2 rounded-lg font-semibold text-sm hover:shadow-lg hover:shadow-cyber-cyan/25 transition-all duration-300"
+          >
+            Sign Up
+          </Link>
+        </motion.div>
+
+        {/* Desktop Navigation */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
